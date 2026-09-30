@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ماديرا شوب | Madeira Shop - شحن جواهر فري فاير</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts - Cairo & Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gaming: {
+                            bg: '#0b0e14',
+                            card: '#151a23',
+                            border: '#2a3241',
+                            primary: '#ff7700',
+                            secondary: '#ffaa00',
+                            accent: '#00d2ff',
+                            dark: '#080a0f'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0b0e14;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Glowing Effects */
+        .glow-orange {
+            box-shadow: 0 0 20px rgba(255, 119, 0, 0.35);
+        }
+        .glow-orange-lg {
+            box-shadow: 0 0 35px rgba(255, 119, 0, 0.5);
+        }
+        .text-glow {
+            text-shadow: 0 0 12px rgba(255, 119, 0, 0.6);
+        }
+        .text-glow-blue {
+            text-shadow: 0 0 12px rgba(0, 210, 255, 0.6);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0e14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a3241;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff7700;
+        }
+
+        /* Card Hover Animations */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            border-color: #ff7700;
+        }
+        .card-selected {
+            border-color: #ff7700 !important;
+            background: linear-gradient(145deg, rgba(255, 119, 0, 0.15), rgba(21, 26, 35, 0.9)) !important;
+            box-shadow: 0 0 25px rgba(255, 119, 0, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-gaming-primary selection:text-white">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-gaming-bg/90 border-b border-gaming-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-gaming-primary to-gaming-secondary flex items-center justify-center text-2xl font-black text-black shadow-lg glow-orange">
+                    <i class="fa-solid font-black fa-gem"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-wider text-white font-tajawal">ماديرا <span class="text-gaming-primary">شوب</span></h1>
+                    <p class="text-xs text-gray-400 -mt-1 font-semibold">MADEIRA SHOP</p>
+                </div>
+            </div>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex flex-1 max-w-md mx-8 relative">
+                <input type="text" id="searchInput" oninput="filterPackages()" placeholder="ابحث عن عرض أو باقة جواهر..." 
+                       class="w-full bg-gaming-card/80 border border-gaming-border rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-gaming-primary transition">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-gray-400"></i>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="flex items-center gap-3">
+                <!-- Customer Service Buttons -->
+                <a href="https://wa.me/201000000000" target="_blank" id="headerWhatsappBtn" 
+                   class="hidden sm:flex items-center gap-2 bg-green-600/20 hover:bg-green-600/30 text-green-400 border border-green-500/40 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    <span>الدعم الفني</span>
+                </a>
+
+                <!-- Admin Button -->
+                <button onclick="openAdminModal()" 
+                        class="flex items-center gap-2 bg-gaming-card border border-gaming-border hover:border-gaming-primary text-gray-300 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-user-gear text-gaming-primary text-sm"></i>
+                    <span>لوحة التحكم</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full space-y-12">
+
+        <!-- Hero Section -->
+        <section class="relative rounded-3xl overflow-hidden border border-gaming-border bg-gradient-to-r from-gaming-card via-gaming-dark to-gaming-card p-6 md:p-10 shadow-2xl">
+            <div class="absolute -right-20 -top-20 w-80 h-80 bg-gaming-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-gaming-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="space-y-4 text-center md:text-right max-w-xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gaming-primary/10 border border-gaming-primary/30 text-gaming-primary text-xs font-bold">
+                        <i class="fa-solid fa-bolt text-gaming-secondary animate-pulse"></i> شحن سريع ومضمون 100%
+                    </div>
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-white leading-tight font-tajawal">
+                        اشحن جواهر <span class="text-transparent bg-clip-text bg-gradient-to-r from-gaming-primary to-gaming-secondary text-glow">فري فاير</span> بأفضل الأسعار!
+                    </h2>
+                    <p class="text-gray-400 text-sm md:text-base">
+                        منصة ماديرا شوب توفر لك آمن وأسرع طريق لشحن حسابك في فري فاير مجاناً بالبونص، اختر باقتك وادفع بالطريقة التي تناسبك!
+                    </p>
+                </div>
+
+                <!-- Game Avatar Badge -->
+                <div class="relative group">
+                    <div class="w-36 h-36 md:w-44 md:h-44 rounded-2xl bg-gradient-to-tr from-gaming-primary via-gaming-accent to-purple-600 p-1 shadow-2xl glow-orange">
+                        <div class="w-full h-full bg-gaming-bg rounded-xl flex flex-col items-center justify-center p-4 text-center">
+                            <i class="fa-solid fa-fire-flame-curved text-5xl text-gaming-primary mb-2"></i>
+                            <span class="font-black text-white text-lg tracking-wider">FREE FIRE</span>
+                            <span class="text-[10px] text-gray-400">شحن الأيدي المباشر</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Player ID Input Section -->
+        <section class="bg-gaming-card rounded-2xl p-6 border border-gaming-border shadow-lg relative overflow-hidden">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-gaming-primary/20 flex items-center justify-center text-gaming-primary font-bold text-lg">
+                    1
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">إدخال بيانات اللاعب</h3>
+                    <p class="text-xs text-gray-400">تأكد من كتابة الـ Player ID الخاص بك بشكل صحيح</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 mb-2">رقم المعرف (Player ID) <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <input type="text" id="playerId" placeholder="مثال: 123456789" 
+                               class="w-full bg-gaming-bg border border-gaming-border rounded-xl px-4 py-3 text-white font-mono placeholder-gray-500 focus:outline-none focus:border-gaming-primary transition">
+                        <i class="fa-solid fa-id-card absolute left-3 top-3.5 text-gray-500"></i>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 mb-2">اسم اللاعب في اللعبة (اختياري)</label>
+                    <div class="relative">
+                        <input type="text" id="playerName" placeholder="اسم الحساب لتأكيد الشحن" 
+                               class="w-full bg-gaming-bg border border-gaming-border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gaming-primary transition">
+                        <i class="fa-solid fa-user-ninja absolute left-3 top-3.5 text-gray-500"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Offers Section -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center text-red-500 font-bold text-lg">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-white font-tajawal">العروض المميزة والتخفيضات</h3>
+                        <p class="text-xs text-gray-400">عروض حصريّة لفترة محدودة من ماديرا شوب</p>
+                    </div>
+                </div>
+                <span class="text-xs bg-red-500/10 text-red-400 border border-red-500/30 px-3 py-1 rounded-full font-bold animate-pulse">
+                    HOT OFFERS
+                </span>
+            </div>
+
+            <!-- Offers Grid -->
+            <div id="offersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Special Offer Cards render dynamically here -->
+            </div>
+        </section>
+
+        <!-- Packages Section -->
+        <section class="space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gaming-accent/20 flex items-center justify-center text-gaming-accent font-bold text-lg">
+                    2
+                </div>
+                <div>
+                    <h3 class="text-xl font-black text-white font-tajawal">باقات الجواهر الأساسية</h3>
+                    <p class="text-xs text-gray-400">اختر كمية الجواهر المناسبة لشحن حسابك</p>
+                </div>
+            </div>
+
+            <!-- Packages Grid -->
+            <div id="packagesGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Package Cards render dynamically here -->
+            </div>
+        </section>
+
+        <!-- Payment Methods Section -->
+        <section class="bg-gaming-card rounded-2xl p-6 border border-gaming-border shadow-lg space-y-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 font-bold text-lg">
+                    3
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">اختر طريقة الدفع</h3>
+                    <p class="text-xs text-gray-400">جميع الطرق آمنة وسريعة</p>
+                </div>
+            </div>
+
+            <!-- Payment Options -->
+            <div id="paymentMethodsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <!-- Payment options loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- Checkout Summary & Send Order -->
+        <section class="bg-gradient-to-r from-gaming-card via-gaming-dark to-gaming-card rounded-2xl p-6 border-2 border-gaming-primary/40 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-2 text-center md:text-right">
+                <div class="text-xs text-gray-400 font-bold">ملخص الطلب:</div>
+                <div id="summaryPackageText" class="text-lg font-black text-white">لم يتم اختيار باقة بعد</div>
+                <div id="summaryPaymentText" class="text-xs text-gaming-accent">طريقة الدفع: غير محددة</div>
+            </div>
+
+            <button onclick="sendOrderViaWhatsapp()" 
+                    class="w-full md:w-auto bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-black px-8 py-4 rounded-xl text-lg flex items-center justify-center gap-3 shadow-xl hover:shadow-green-500/25 transition transform active:scale-95">
+                <i class="fa-brands fa-whatsapp text-2xl"></i>
+                <span>تأكيد وشحن الطلب الآن</span>
+            </button>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gaming-dark border-t border-gaming-border mt-16 py-8 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 space-y-4">
+            <div class="flex justify-center items-center gap-2">
+                <span class="font-bold text-gray-300">ماديرا شوب (Madeira Shop)</span>
+                <span>&copy; 2026 - جميع الحقوق محفوظة</span>
+            </div>
+            <p class="text-[11px] text-gray-600 max-w-xl mx-auto">
+                موقع ماديرا شوب هو متجر متخصص في شحن جواهر فري فاير والخدمات الرقمية. نحن لسنا تابعين لشركة Garena بشكل مباشر ولكننا نقدم خيارات شحن رسمية وآمنة 100%.
+            </p>
+        </div>
+    </footer>
+
+    <!-- ADMIN PANEL MODAL -->
+    <div id="adminModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-gaming-card border border-gaming-border rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 text-white shadow-2xl">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b border-gaming-border pb-4">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-sliders text-gaming-primary text-xl"></i>
+                    <div>
+                        <h3 class="text-xl font-bold font-tajawal">لوحة إعدادات متجر ماديرا شوب</h3>
+                        <p class="text-xs text-gray-400">تعديل الباقات، العروض، ورقم الواتساب</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-white text-xl p-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Settings Form -->
+            <div class="space-y-6">
+                <!-- Phone Number Config -->
+                <div class="bg-gaming-bg p-4 rounded-xl border border-gaming-border">
+                    <label class="block text-xs font-bold text-gray-300 mb-2">رقم الواتساب لاستلام الطلبات (مع كود الدولة مثل 201000000000)</label>
+                    <input type="text" id="adminWhatsappInput" class="w-full bg-gaming-card border border-gaming-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gaming-primary">
+                </div>
+
+                <!-- Add New Item Section -->
+                <div class="bg-gaming-bg p-4 rounded-xl border border-gaming-border space-y-4">
+                    <h4 class="font-bold text-sm text-gaming-primary flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle"></i> إضافة باقة أو عرض جديد
+                    </h4>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] text-gray-400 mb-1">نوع الكارت</label>
+                            <select id="newItemType" class="w-full bg-gaming-card border border-gaming-border rounded-lg p-2 text-xs text-white">
+                                <option value="package">باقة أساسية</option>
+                                <option value="offer">عرض خاص (HOT)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-gray-400 mb-1">اسم/عنوان الباقة</label>
+                            <input type="text" id="newItemTitle" placeholder="مثلاً: 100 + 10 جوهرة" class="w-full bg-gaming-card border border-gaming-border rounded-lg p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-gray-400 mb-1">السعر (بالجنيه/العملة)</label>
+                            <input type="text" id="newItemPrice" placeholder="مثلاً: 50 ج.م" class="w-full bg-gaming-card border border-gaming-border rounded-lg p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-gray-400 mb-1">البونص / وصف إضافي</label>
+                            <input type="text" id="newItemBonus" placeholder="مثلاً: +20% مجاناً" class="w-full bg-gaming-card border border-gaming-border rounded-lg p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-gray-400 mb-1">رمز الأيقونة (FontAwesome)</label>
+                            <input type="text" id="newItemIcon" placeholder="fa-gem" class="w-full bg-gaming-card border border-gaming-border rounded-lg p-2 text-xs text-white">
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="addNewItem()" class="w-full bg-gaming-primary hover:bg-gaming-secondary text-black font-bold p-2 rounded-lg text-xs transition">
+                                إضافة الباقة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing Items List Table -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-sm text-gray-300">إدارة الباقات والعروض الحالية</h4>
+                    <div class="overflow-x-auto border border-gaming-border rounded-xl">
+                        <table class="w-full text-right text-xs">
+                            <thead class="bg-gaming-bg text-gray-400 border-b border-gaming-border">
+                                <tr>
+                                    <th class="p-3">النوع</th>
+                                    <th class="p-3">العنوان</th>
+                                    <th class="p-3">السعر</th>
+                                    <th class="p-3">البونص/الوصف</th>
+                                    <th class="p-3 text-center">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminItemsTable" class="divide-y divide-gaming-border">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex justify-between items-center border-t border-gaming-border pt-4">
+                <button onclick="resetToDefaults()" class="text-xs text-red-400 hover:text-red-300 underline">
+                    عادة ضبط البيانات الافتراضية
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="closeAdminModal()" class="px-4 py-2 bg-gaming-bg border border-gaming-border rounded-lg text-xs font-bold text-gray-300 hover:text-white">
+                        إلغاء
+                    </button>
+                    <button onclick="saveAdminSettings()" class="px-5 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-xs font-bold shadow-lg">
+                        حفظ التغييرات
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // DEFAULT DATA
+        const DEFAULT_WHATSAPP = "201000000000";
+        
+        const DEFAULT_ITEMS = [
+            // Offers
+            { id: 1, type: 'offer', title: 'عرض الملوك 1080 جوهرة', price: '380 ج.م', bonus: '+100 جوهرة هدية', icon: 'fa-crown', badge: 'الأكثر مبيعاً' },
+            { id: 2, type: 'offer', title: 'الباس الشهري (Monthly Pass)', price: '320 ج.م', bonus: '2600 جوهرة إجمالي', icon: 'fa-calendar-check', badge: 'توفير ضخم' },
+            { id: 3, type: 'offer', title: 'الباس الأسبوعي (Weekly Pass)', price: '85 ج.م', bonus: '450 جوهرة إجمالي', icon: 'fa-bolt', badge: 'عرض خاص' },
+            // Packages
+            { id: 4, type: 'package', title: '110 جوهرة', price: '45 ج.م', bonus: 'بدون بونص', icon: 'fa-gem' },
+            { id: 5, type: 'package', title: '231 جوهرة', price: '90 ج.م', bonus: '+21 مجاناً', icon: 'fa-gem' },
+            { id: 6, type: 'package', title: '583 جوهرة', price: '210 ج.م', bonus: '+53 مجاناً', icon: 'fa-gem' },
+            { id: 7, type: 'package', title: '1188 جوهرة', price: '410 ج.م', bonus: '+108 مجاناً', icon: 'fa-gem' },
+            { id: 8, type: 'package', title: '2420 جوهرة', price: '820 ج.م', bonus: '+220 مجاناً', icon: 'fa-gem' }
+        ];
+
+        const PAYMENT_METHODS = [
+            { id: 'vodafone', name: 'فودافون كاش', icon: 'fa-mobile-screen-button', color: 'text-red-500' },
+            { id: 'orange', name: 'أورنج كاش', icon: 'fa-wallet', color: 'text-orange-500' },
+            { id: 'etisalat', name: 'اتصالات كاش', icon: 'fa-money-bill-wave', color: 'text-green-500' },
+            { id: 'we', name: 'وي كاش / كروت بنكية', icon: 'fa-credit-card', color: 'text-purple-400' }
+        ];
+
+        // STATE VARIABLES
+        let appData = {
+            whatsapp: DEFAULT_WHATSAPP,
+            items: []
+        };
+
+        let selectedPackage = null;
+        let selectedPayment = null;
+
+        // INITIALIZATION
+        window.onload = function() {
+            loadDataFromStorage();
+            renderAll();
+        };
+
+        function loadDataFromStorage() {
+            const savedData = localStorage.getItem('madeira_shop_data');
+            if (savedData) {
+                try {
+                    appData = JSON.parse(savedData);
+                } catch(e) {
+                    appData = { whatsapp: DEFAULT_WHATSAPP, items: DEFAULT_ITEMS };
+                }
+            } else {
+                appData = { whatsapp: DEFAULT_WHATSAPP, items: DEFAULT_ITEMS };
+                saveDataToStorage();
+            }
+        }
+
+        function saveDataToStorage() {
+            localStorage.setItem('madeira_shop_data', JSON.stringify(appData));
+        }
+
+        // RENDER FUNCTIONS
+        function renderAll() {
+            renderOffers();
+            renderPackages();
+            renderPaymentMethods();
+            updateWhatsappLink();
+            updateSummary();
+        }
+
+        function updateWhatsappLink() {
+            const btn = document.getElementById('headerWhatsappBtn');
+            btn.href = `https://wa.me/${appData.whatsapp}`;
+        }
+
+        function renderOffers() {
+            const container = document.getElementById('offersGrid');
+            const offers = appData.items.filter(item => item.type === 'offer');
+
+            if(offers.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-gray-500 py-6 text-sm">لا توجد عروض خاصة حالياً.</div>`;
+                return;
+            }
+
+            container.innerHTML = offers.map(item => `
+                <div onclick="selectPackage(${item.id})" 
+                     id="card-${item.id}"
+                     class="card-hover bg-gradient-to-b from-gaming-card to-gaming-dark border border-gaming-border rounded-2xl p-5 cursor-pointer relative overflow-hidden flex flex-col justify-between ${selectedPackage?.id === item.id ? 'card-selected' : ''}">
+                    
+                    ${item.badge ? `<span class="absolute top-3 left-3 bg-gradient-to-r from-gaming-primary to-gaming-secondary text-black font-black text-[10px] px-2.5 py-1 rounded-full shadow-md">${item.badge}</span>` : ''}
+
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-gaming-primary/10 border border-gaming-primary/30 flex items-center justify-center text-gaming-primary text-xl">
+                            <i class="fa-solid ${item.icon || 'fa-fire'}"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-base">${item.title}</h4>
+                            <p class="text-xs text-gaming-accent font-semibold">${item.bonus}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-gaming-border/60 flex items-center justify-between">
+                        <span class="text-xs text-gray-400">السعر:</span>
+                        <span class="text-lg font-black text-gaming-primary">${item.price}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPackages() {
+            const container = document.getElementById('packagesGrid');
+            const packages = appData.items.filter(item => item.type === 'package');
+
+            if(packages.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-gray-500 py-6 text-sm">لا توجد باقات متاحة حالياً.</div>`;
+                return;
+            }
+
+            container.innerHTML = packages.map(item => `
+                <div onclick="selectPackage(${item.id})" 
+                     id="card-${item.id}"
+                     class="card-hover bg-gaming-card border border-gaming-border rounded-xl p-4 cursor-pointer text-center relative flex flex-col justify-between ${selectedPackage?.id === item.id ? 'card-selected' : ''}">
+                    
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 mx-auto rounded-lg bg-gaming-accent/10 border border-gaming-accent/20 flex items-center justify-center text-gaming-accent text-lg">
+                            <i class="fa-solid ${item.icon || 'fa-gem'}"></i>
+                        </div>
+                        <h4 class="font-bold text-white text-sm">${item.title}</h4>
+                        <span class="inline-block text-[11px] bg-gaming-bg text-gray-300 border border-gaming-border px-2 py-0.5 rounded-md font-semibold">${item.bonus}</span>
+                    </div>
+
+                    <div class="mt-3 pt-2 border-t border-gaming-border/40 text-center">
+                        <span class="text-sm font-black text-gaming-primary">${item.price}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPaymentMethods() {
+            const container = document.getElementById('paymentMethodsGrid');
+            container.innerHTML = PAYMENT_METHODS.map(pay => `
+                <div onclick="selectPayment('${pay.id}')" 
+                     id="pay-${pay.id}"
+                     class="card-hover bg-gaming-bg border border-gaming-border rounded-xl p-4 cursor-pointer text-center flex flex-col items-center justify-center gap-2 ${selectedPayment?.id === pay.id ? 'card-selected' : ''}">
+                    <i class="fa-solid ${pay.icon} ${pay.color} text-2xl"></i>
+                    <span class="text-xs font-bold text-gray-200">${pay.name}</span>
+                </div>
+            `).join('');
+        }
+
+        // SELECTION LOGIC
+        function selectPackage(id) {
+            selectedPackage = appData.items.find(item => item.id === id);
+            
+            // Remove selection state from all package cards
+            document.querySelectorAll('[id^="card-"]').forEach(el => el.classList.remove('card-selected'));
+            
+            // Highlight selected card
+            const selectedCard = document.getElementById(`card-${id}`);
+            if(selectedCard) selectedCard.classList.add('card-selected');
+
+            updateSummary();
+        }
+
+        function selectPayment(id) {
+            selectedPayment = PAYMENT_METHODS.find(p => p.id === id);
+            
+            document.querySelectorAll('[id^="pay-"]').forEach(el => el.classList.remove('card-selected'));
+            
+            const selectedPayCard = document.getElementById(`pay-${id}`);
+            if(selectedPayCard) selectedPayCard.classList.add('card-selected');
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const pkgText = document.getElementById('summaryPackageText');
+            const payText = document.getElementById('summaryPaymentText');
+
+            if(selectedPackage) {
+                pkgText.innerHTML = `<span class="text-gaming-primary">${selectedPackage.title}</span> بسعر (${selectedPackage.price})`;
+            } else {
+                pkgText.innerText = "لم يتم اختيار باقة بعد";
+            }
+
+            if(selectedPayment) {
+                payText.innerText = `طريقة الدفع: ${selectedPayment.name}`;
+            } else {
+                payText.innerText = "طريقة الدفع: غير محددة";
+            }
+        }
+
+        // FILTER SEARCH FUNCTION
+        function filterPackages() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredItems = appData.items.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.bonus.toLowerCase().includes(query) ||
+                item.price.toLowerCase().includes(query)
+            );
+
+            // Re-render filtered cards
+            const offersContainer = document.getElementById('offersGrid');
+            const packagesContainer = document.getElementById('packagesGrid');
+
+            const filteredOffers = filteredItems.filter(item => item.type === 'offer');
+            const filteredPackages = filteredItems.filter(item => item.type === 'package');
+
+            if(filteredOffers.length > 0) {
+                offersContainer.innerHTML = filteredOffers.map(item => `
+                    <div onclick="selectPackage(${item.id})" id="card-${item.id}" class="card-hover bg-gradient-to-b from-gaming-card to-gaming-dark border border-gaming-border rounded-2xl p-5 cursor-pointer relative overflow-hidden flex flex-col justify-between ${selectedPackage?.id === item.id ? 'card-selected' : ''}">
+                        <div class="space-y-3">
+                            <div class="w-12 h-12 rounded-xl bg-gaming-primary/10 border border-gaming-primary/30 flex items-center justify-center text-gaming-primary text-xl">
+                                <i class="fa-solid ${item.icon || 'fa-fire'}"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-base">${item.title}</h4>
+                                <p class="text-xs text-gaming-accent font-semibold">${item.bonus}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-gaming-border/60 flex items-center justify-between">
+                            <span class="text-xs text-gray-400">السعر:</span>
+                            <span class="text-lg font-black text-gaming-primary">${item.price}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                offersContainer.innerHTML = `<div class="col-span-full text-center text-gray-500 py-4 text-xs">لا توجد عروض مطابقة للبحث</div>`;
+            }
+
+            if(filteredPackages.length > 0) {
+                packagesContainer.innerHTML = filteredPackages.map(item => `
+                    <div onclick="selectPackage(${item.id})" id="card-${item.id}" class="card-hover bg-gaming-card border border-gaming-border rounded-xl p-4 cursor-pointer text-center relative flex flex-col justify-between ${selectedPackage?.id === item.id ? 'card-selected' : ''}">
+                        <div class="space-y-2">
+                            <div class="w-10 h-10 mx-auto rounded-lg bg-gaming-accent/10 border border-gaming-accent/20 flex items-center justify-center text-gaming-accent text-lg">
+                                <i class="fa-solid ${item.icon || 'fa-gem'}"></i>
+                            </div>
+                            <h4 class="font-bold text-white text-sm">${item.title}</h4>
+                            <span class="inline-block text-[11px] bg-gaming-bg text-gray-300 border border-gaming-border px-2 py-0.5 rounded-md font-semibold">${item.bonus}</span>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-gaming-border/40 text-center">
+                            <span class="text-sm font-black text-gaming-primary">${item.price}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                packagesContainer.innerHTML = `<div class="col-span-full text-center text-gray-500 py-4 text-xs">لا توجد باقات مطابقة للبحث</div>`;
+            }
+        }
+
+        // WHATSAPP ORDER SUBMISSION
+        function sendOrderViaWhatsapp() {
+            const playerId = document.getElementById('playerId').value.trim();
+            const playerName = document.getElementById('playerName').value.trim();
+
+            if (!playerId) {
+                alert('الرجاء إدخال رقم المعرف (Player ID) الخاص بك في فري فاير.');
+                document.getElementById('playerId').focus();
+                return;
+            }
+
+            if (!selectedPackage) {
+                alert('الرجاء اختيار الباقة أو العرض المراد شحنه.');
+                return;
+            }
+
+            if (!selectedPayment) {
+                alert('الرجاء اختيار طريقة الدفع المفضلة.');
+                return;
+            }
+
+            // Construct WhatsApp Message
+            const message = `👋 مرحباً متجر *ماديرا شوب (Madeira Shop)*\n\n` +
+                            `أود طلب شحن جواهر فري فاير بالتفاصيل التالية:\n` +
+                            `------------------------------------\n` +
+                            `🆔 *معرف اللاعب (ID):* \`${playerId}\`\n` +
+                            (playerName ? `👤 *اسم الحساب:* ${playerName}\n` : '') +
+                            `💎 *الباقة المختارة:* ${selectedPackage.title}\n` +
+                            `💵 *السعر:* ${selectedPackage.price}\n` +
+                            `💳 *طريقة الدفع:* ${selectedPayment.name}\n` +
+                            `------------------------------------\n` +
+                            `في انتظار تفاصيل وسيلة الدفع لإتمام الشحن الآن! ⚡`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${appData.whatsapp}?text=${encodedMessage}`;
+
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // ADMIN MODAL LOGIC
+        function openAdminModal() {
+            document.getElementById('adminWhatsappInput').value = appData.whatsapp;
+            renderAdminTable();
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminItemsTable');
+            tbody.innerHTML = appData.items.map(item => `
+                <tr class="hover:bg-gaming-bg/50">
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.type === 'offer' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}">
+                            ${item.type === 'offer' ? 'عرض خاص' : 'باقة'}
+                        </span>
+                    </td>
+                    <td class="p-3 font-bold">${item.title}</td>
+                    <td class="p-3 text-gaming-primary font-bold">${item.price}</td>
+                    <td class="p-3 text-gray-400">${item.bonus || '-'}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteItem(${item.id})" class="text-red-400 hover:text-red-300 p-1">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addNewItem() {
+            const type = document.getElementById('newItemType').value;
+            const title = document.getElementById('newItemTitle').value.trim();
+            const price = document.getElementById('newItemPrice').value.trim();
+            const bonus = document.getElementById('newItemBonus').value.trim();
+            const icon = document.getElementById('newItemIcon').value.trim() || 'fa-gem';
+
+            if(!title || !price) {
+                alert('يرجى إدخال عنوان الباقة والسعر على الأقل.');
+                return;
+            }
+
+            const newItem = {
+                id: Date.now(),
+                type: type,
+                title: title,
+                price: price,
+                bonus: bonus || 'بدون بونص',
+                icon: icon,
+                badge: type === 'offer' ? 'عرض جديد' : ''
+            };
+
+            appData.items.push(newItem);
+            
+            // Clear inputs
+            document.getElementById('newItemTitle').value = '';
+            document.getElementById('newItemPrice').value = '';
+            document.getElementById('newItemBonus').value = '';
+
+            renderAdminTable();
+        }
+
+        function deleteItem(id) {
+            if(confirm('هل أنت تأكد من حذف هذه الباقة؟')) {
+                appData.items = appData.items.filter(item => item.id !== id);
+                renderAdminTable();
+            }
+        }
+
+        function saveAdminSettings() {
+            const whatsappInput = document.getElementById('adminWhatsappInput').value.trim();
+            if(whatsappInput) {
+                appData.whatsapp = whatsappInput;
+            }
+
+            saveDataToStorage();
+            renderAll();
+            closeAdminModal();
+            alert('تم حفظ التغييرات والتحديثات بنجاح في متجر ماديرا شوب!');
+        }
+
+        function resetToDefaults() {
+            if(confirm('هل أنت متاكد من إعادة ضبط كافة البيانات إلى الحالة الافتراضية؟')) {
+                appData = { whatsapp: DEFAULT_WHATSAPP, items: DEFAULT_ITEMS };
+                saveDataToStorage();
+                renderAll();
+                closeAdminModal();
+            }
+        }
+    </script>
+</body>
+</html>
